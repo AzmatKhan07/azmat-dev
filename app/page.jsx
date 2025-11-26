@@ -21,6 +21,7 @@ import {
   X,
   ArrowRight,
 } from "lucide-react";
+import { Projects } from "@/components/projects";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function Home() {
@@ -39,6 +40,7 @@ export default function Home() {
     { name: "Home", href: "#hero" },
     { name: "About", href: "#about" },
     { name: "Skills", href: "#skills" },
+    { name: "Projects", href: "#projects" },
     { name: "Experience", href: "#experience" },
     { name: "Contact", href: "#contact" },
   ];
@@ -596,6 +598,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Projects Section */}
+      <Projects />
 
       {/* Contact Section */}
       <section id="contact" className="py-24">
