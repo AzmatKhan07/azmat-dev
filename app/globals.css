@@ -1,150 +1,257 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @custom-variant dark (&:is([data-theme="dark"] *));
 
-html {
-  scroll-behavior: smooth;
-  overflow-x: hidden;
+/* ------------------------------------------------------------------
+   Tokens
+   Light: chalk paper + slate ink, the way a well-printed page reads.
+   Dark:  press ink + warm paper text.
+   One accent (ultramarine) carries every interaction. One green
+   carries availability status. Nothing else is coloured.
+------------------------------------------------------------------ */
+
+:root {
+  --background: #f7f6f3;
+  --surface: #ffffff;
+  --surface-sunk: #efeee9;
+  --foreground: #14161a;
+  --muted: #64666d;
+  --rule: #ddddd6;
+  --rule-strong: #c4c4bc;
+  --accent: #2438d8;
+  --accent-contrast: #ffffff;
+  --success: #1c7a4b;
+
+  --measure: 62ch;
+  --page: 76rem;
 }
 
-body {
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
-  overflow-x: hidden;
+[data-theme="dark"] {
+  --background: #101216;
+  --surface: #171a20;
+  --surface-sunk: #0b0d10;
+  --foreground: #ecebe6;
+  --muted: #9b9da4;
+  --rule: #262a31;
+  --rule-strong: #3b3f48;
+  --accent: #8a9bff;
+  --accent-contrast: #0e1014;
+  --success: #4fbe85;
 }
 
 @theme inline {
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 6px);
-  --radius-2xl: calc(var(--radius) + 12px);
-  
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-sunk: var(--surface-sunk);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
   --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-success: var(--success);
+
+  --font-display: var(--font-display-raw), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body-raw), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-xs: 2px;
+  --radius-sm: 3px;
 }
 
-:root {
-  --radius: 0.875rem;
-  /* Light Mode - Pristine modern tech palette */
-  --background: oklch(0.985 0.005 260);
-  --foreground: oklch(0.18 0.03 260);
-  --card: oklch(1 0 0 / 85%);
-  --card-foreground: oklch(0.18 0.03 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.03 260);
-  --primary: oklch(0.55 0.22 265);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.95 0.015 260);
-  --secondary-foreground: oklch(0.25 0.04 260);
-  --muted: oklch(0.95 0.01 260);
-  --muted-foreground: oklch(0.48 0.02 260);
-  --accent: oklch(0.65 0.18 200);
-  --accent-foreground: oklch(0.12 0.03 200);
-  --destructive: oklch(0.58 0.22 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.90 0.015 260);
-  --input: oklch(0.90 0.015 260);
-  --ring: oklch(0.55 0.22 265);
-}
+/* ------------------------------------------------------------------
+   Base
+------------------------------------------------------------------ */
 
-html[data-theme="dark"] {
-  /* Dark Mode - Midnight Slate with luminous Indigo/Cyan aura */
-  --background: oklch(0.12 0.025 260);
-  --foreground: oklch(0.96 0.01 260);
-  --card: oklch(0.16 0.028 260 / 75%);
-  --card-foreground: oklch(0.96 0.01 260);
-  --popover: oklch(0.15 0.028 260);
-  --popover-foreground: oklch(0.96 0.01 260);
-  --primary: oklch(0.68 0.21 265);
-  --primary-foreground: oklch(0.12 0.03 260);
-  --secondary: oklch(0.20 0.03 260);
-  --secondary-foreground: oklch(0.96 0.01 260);
-  --muted: oklch(0.20 0.025 260);
-  --muted-foreground: oklch(0.68 0.02 260);
-  --accent: oklch(0.72 0.16 200);
-  --accent-foreground: oklch(0.12 0.03 200);
-  --destructive: oklch(0.65 0.20 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.68 0.21 265);
-}
-
+/* Layered so that border colour utilities can still override the default. */
 @layer base {
-  * {
-    @apply border-border;
+  *,
+  *::before,
+  *::after {
+    border-color: var(--rule);
   }
-  body {
-    @apply bg-background text-foreground antialiased selection:bg-primary/25 selection:text-foreground;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body-raw), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-synthesis-weight: none;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+/* Visible, unambiguous keyboard focus everywhere. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ------------------------------------------------------------------
+   Layout helpers
+------------------------------------------------------------------ */
+
+.page {
+  width: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 3.5rem);
+}
+
+.measure {
+  max-width: var(--measure);
+}
+
+.rule-top {
+  border-top: 1px solid var(--rule);
+}
+
+/* ------------------------------------------------------------------
+   Type
+   One display face doing real work, one text face staying quiet.
+------------------------------------------------------------------ */
+
+.display {
+  font-family: var(--font-display-raw), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.032em;
+  line-height: 0.94;
+  text-wrap: balance;
+}
+
+.display-hero {
+  font-size: clamp(2.75rem, 8.2vw, 6.25rem);
+}
+
+.display-lg {
+  font-size: clamp(2rem, 4.6vw, 3.5rem);
+}
+
+.display-md {
+  font-size: clamp(1.5rem, 2.6vw, 2.125rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.display-sm {
+  font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+
+.lede {
+  font-size: clamp(1.0625rem, 1.25vw, 1.1875rem);
+  line-height: 1.6;
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Inline text links: underline that sits below the baseline properly. */
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--rule-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color 150ms ease, color 150ms ease;
+}
+
+.link:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+/* ------------------------------------------------------------------
+   The one orchestrated motion moment: the hero sets itself, once.
+------------------------------------------------------------------ */
+
+/* The clip box is extended below the baseline so descenders are not cut off
+   at the tight display line-height, then pulled back with negative margin. */
+.rise-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+
+.rise {
+  display: block;
+  animation: rise 900ms cubic-bezier(0.16, 0.84, 0.28, 1) both;
+}
+
+@keyframes rise {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: translateY(0);
   }
 }
 
-/* Glassmorphic & modern aesthetics */
-.glass-panel {
-  background: var(--card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border);
+.fade-in {
+  animation: fade-in 700ms ease both;
 }
 
-.glow-pill {
-  box-shadow: 0 0 24px -4px rgba(99, 102, 241, 0.25);
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.gradient-text {
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  background-image: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, #a855f7 100%);
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .rise {
+    transform: none;
+  }
 }
 
-.gradient-border {
-  position: relative;
+/* ------------------------------------------------------------------
+   Scrollbar: thin, unobtrusive, theme-aware.
+------------------------------------------------------------------ */
+
+@supports (scrollbar-width: thin) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule-strong) transparent;
+  }
 }
 
-.gradient-border::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(56, 189, 248, 0.2), transparent 70%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
-
-/* Custom sleek scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
+  height: 10px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: oklch(0.5 0 0 / 20%);
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: oklch(0.5 0 0 / 35%);
+  background: var(--rule-strong);
+  border: 3px solid var(--background);
+  border-radius: 999px;
 }
