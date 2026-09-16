@@ -1,32 +1,34 @@
 "use client";
 
-import * as React from "react";
-import { Moon, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { Moon, Sun } from "lucide-react";
 
 export function ThemeToggle() {
-  const { setTheme, theme, systemTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => setMounted(true), []);
 
+  const isDark = resolvedTheme === "dark";
+
+  // Render a same-size placeholder before hydration so the header never shifts.
   if (!mounted) {
-    return null;
+    return <span className="block size-9" aria-hidden="true" />;
   }
-
-  const currentTheme = theme === "system" ? systemTheme : theme;
 
   return (
     <button
-      onClick={() => setTheme(currentTheme === "light" ? "dark" : "light")}
-      className="relative p-2 rounded-full hover:bg-accent/10 transition-colors"
-      aria-label="Toggle theme"
+      type="button"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="flex size-9 items-center justify-center text-muted hover:text-foreground"
+      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
     >
-      <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-      <Moon className="absolute top-2 left-2 h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-      <span className="sr-only">Toggle theme</span>
+      {isDark ? (
+        <Sun className="size-4" strokeWidth={1.75} />
+      ) : (
+        <Moon className="size-4" strokeWidth={1.75} />
+      )}
     </button>
   );
 }
